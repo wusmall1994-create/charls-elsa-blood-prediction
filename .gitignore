@@ -1,0 +1,20 @@
+# Controlled-access and derived participant-level data
+data/
+data_private/
+raw/
+derived/
+*.dta
+*.sav
+*.sas7bdat
+*.pkl
+*.pickle
+*.joblib
+
+# Generated results and local environments
+results/
+qa_logs/
+figures/
+__pycache__/
+*.py[cod]
+.venv/
+.env
