@@ -29,7 +29,7 @@ from threadpoolctl import threadpool_limits
 ROOT = Path(os.environ["ANALYSIS_ROOT"])
 PRIVATE=ROOT/'data_private'/'elsa'
 QA=ROOT/'qa_logs'
-SPEC=importlib.util.spec_from_file_location('cohort_builder',ROOT/'scripts/core/38_build_elsa_checked_cohorts.py')
+SPEC=importlib.util.spec_from_file_location('cohort_builder',Path(__file__).resolve().parents[2] / 'scripts/core/38_build_elsa_checked_cohorts.py')
 B=importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(B)
 SEED=20260912
 TIME=['start','start_squared','duration','log_duration']

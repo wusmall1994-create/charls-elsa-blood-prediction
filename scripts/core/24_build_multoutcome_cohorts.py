@@ -20,7 +20,7 @@ QA_OUT = PROJECT / "qa_logs"
 
 
 def load_existing_cohort_module():
-    path = PROJECT / "scripts" / "02_build_model_cohorts.py"
+    path = Path(__file__).resolve().parents[2] / 'scripts/core/02_build_model_cohorts.py'
     spec = spec_from_file_location("digestive_cohort_module", path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Could not import shared cohort definitions from {path}")

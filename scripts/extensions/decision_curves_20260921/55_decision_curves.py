@@ -5,7 +5,7 @@ import numpy as np,pandas as pd,json,hashlib
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-W=Path(__file__).resolve().parent;Q=W/'decision_curve_results';Q.mkdir(exist_ok=True)
+W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True);Q=W/'decision_curve_results';Q.mkdir(exist_ok=True)
 P=Path(os.environ["ANALYSIS_ROOT"]) / "data_private"
 T=np.round(np.arange(.01,.30001,.005),6);odds=T/(1-T);rows=[];summ=[];audit=[]
 plt.rcParams.update({'font.family':'Arial','font.size':9,'svg.fonttype':'none','axes.spines.top':False,'axes.spines.right':False,'legend.frameon':False})

@@ -7,8 +7,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV,StratifiedGroupKFold
 from sklearn.metrics import roc_auc_score,brier_score_loss
-W=Path(__file__).resolve().parent;P=Path(os.environ["ANALYSIS_ROOT"]);D=P/'data_private/multoutcome';O=P/'data_private/revision_competing';Q=W/'competing_results';Q.mkdir(exist_ok=True)
-spec=importlib.util.spec_from_file_location('model',P/'scripts/04_discrete_time_models.py');M=importlib.util.module_from_spec(spec);spec.loader.exec_module(M)
+W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True);P=Path(os.environ["ANALYSIS_ROOT"]);D=P/'data_private/multoutcome';O=P/'data_private/revision_competing';Q=W/'competing_results';Q.mkdir(exist_ok=True)
+spec=importlib.util.spec_from_file_location('model',Path(__file__).resolve().parents[3] / 'scripts/core/04_discrete_time_models.py');M=importlib.util.module_from_spec(spec);spec.loader.exec_module(M)
 death=pd.read_pickle(O/'charls_deaths.pkl');outcomes=['hypertension','dyslipidemia','diabetes','chronic_lung_disease','heart_disease','stroke','kidney_disease','digestive_disease','arthritis_or_rheumatism']
 wave={2013:2,2015:3,2018:4,2020:5};nominal={2:2013,3:2015,4:2018,5:2020}
 

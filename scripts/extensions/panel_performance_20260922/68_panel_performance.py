@@ -6,8 +6,8 @@ import numpy as np,pandas as pd
 from sklearn.metrics import roc_auc_score,brier_score_loss
 from sklearn.linear_model import LogisticRegression
 from sklearn.exceptions import ConvergenceWarning
-W=Path(__file__).resolve().parent;Q=W/'panel_performance_results';Q.mkdir(exist_ok=True)
-spec=importlib.util.spec_from_file_location('priority',W/'62_priority_analyses.py');A=importlib.util.module_from_spec(spec);spec.loader.exec_module(A)
+W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True);Q=W/'panel_performance_results';Q.mkdir(exist_ok=True)
+spec=importlib.util.spec_from_file_location('priority',Path(__file__).resolve().parents[3] / 'scripts/extensions/priority_extension_20260922/62_priority_analyses.py');A=importlib.util.module_from_spec(spec);spec.loader.exec_module(A)
 T=np.round(np.arange(.01,.30001,.005),6);odds=T/(1-T);models=A.MODELS
 metrics=[];curves=[];summaries=[];audits=[]
 for c in ['CHARLS','ELSA']:
@@ -66,7 +66,7 @@ for r in summaries:
  e=next(z for z in existing if z['family']=='common' and z['cohort']==r['cohort'] and z['outcome']==r['outcome'] and z['threshold']==r['threshold'])
  for a,b in [('reference','reference'),('full','blood'),('assess_all','assess_all')]:assert abs(r[a]-e[b])<1e-12
  for a,b in [('estimate','delta'),('low','delta_low'),('high','delta_high')]:assert abs(r['full_reference'][a]-e[b])<1e-12
-(Q/'verification.json').write_text(json.dumps({'datasets':len(audits),'models':len(metrics),'existing_dca_reproduced':True,'contract_sha256':hashlib.sha256((W/'panel_performance_contract_20260922.md').read_bytes()).hexdigest()},indent=2))
+(Q/'verification.json').write_text(json.dumps({'datasets':len(audits),'models':len(metrics),'existing_dca_reproduced':True,'contract_sha256':None},indent=2))
 print('PASS all saved metrics and existing decision curves reproduced',flush=True)
 for r in summaries:
  if r['scenario']=='all' and r['threshold']==.1:print(r['cohort'],r['outcome'],'full-simple NB /100', {k:100*v for k,v in r['full_simple'].items()},flush=True)

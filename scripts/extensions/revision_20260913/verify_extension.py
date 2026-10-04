@@ -3,7 +3,7 @@ from pathlib import Path
 import json,re,hashlib
 import numpy as np,pandas as pd
 from sklearn.metrics import roc_auc_score,brier_score_loss,average_precision_score
-W=Path(__file__).resolve().parent;R=Path(os.environ["ANALYSIS_ROOT"])
+W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True);R=Path(os.environ["ANALYSIS_ROOT"])
 rows=json.loads((W/'extension_results/transport.json').read_text())
 for r in rows:
  d=pd.read_pickle(R/f'data_private/revision_20260913/{r["cohort"]}_{r["outcome"]}.pkl');d=d.loc[d.evaluable]

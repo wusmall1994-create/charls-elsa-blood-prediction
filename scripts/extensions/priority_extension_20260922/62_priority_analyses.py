@@ -7,8 +7,8 @@ from sklearn.model_selection import StratifiedKFold,GridSearchCV
 from sklearn.metrics import roc_auc_score,brier_score_loss
 from sklearn.exceptions import ConvergenceWarning
 from threadpoolctl import threadpool_limits
-W=Path(__file__).resolve().parent;R=Path(os.environ["ANALYSIS_ROOT"]);P=R/'data_private';OLD=P/'replication_extensions';NEW=P/'priority_extension_20260922';NEW.mkdir(exist_ok=True);Q=W/'priority_results';Q.mkdir(exist_ok=True)
-sp=importlib.util.spec_from_file_location('existing42',R/'scripts/42_replication_sensitivity_suite.py');X=importlib.util.module_from_spec(sp);sp.loader.exec_module(X);T=X.T
+W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True);R=Path(os.environ["ANALYSIS_ROOT"]);P=R/'data_private';OLD=P/'replication_extensions';NEW=P/'priority_extension_20260922';NEW.mkdir(exist_ok=True);Q=W/'priority_results';Q.mkdir(exist_ok=True)
+sp=importlib.util.spec_from_file_location('existing42',Path(__file__).resolve().parents[3] / 'scripts/core/42_replication_sensitivity_suite.py');X=importlib.util.module_from_spec(sp);sp.loader.exec_module(X);T=X.T
 MODELS=['reference','simple','full'];SEED=20260922
 def dump(path,x):
  path.write_text(json.dumps(x,indent=2,allow_nan=False),encoding='utf-8')
@@ -146,7 +146,7 @@ def run(c,o,stability=False):
    base=pd.read_pickle(NEW/f'{c}_{o}_all_predictions.pkl');observed=set(alltest.loc[alltest.fasting_sample.eq(1)&alltest.glucose.notna(),'person_id'])
    for name,mask in [('glucose_observed',base.person_id.isin(observed)),('glucose_missing_or_unverified',~base.person_id.isin(observed))]:
     results.append(summarize(base.loc[mask],c,o,name))
- dump(output,{'results':results,'audit':audit,'tuning':tuning,'elapsed':time.time()-start,'versions':{'python':sys.version,'numpy':np.__version__,'pandas':pd.__version__,'sklearn':sklearn.__version__},'contract_sha256':hashlib.sha256((W/'priority_analysis_contract_20260922.md').read_bytes()).hexdigest()})
+ dump(output,{'results':results,'audit':audit,'tuning':tuning,'elapsed':time.time()-start,'versions':{'python':sys.version,'numpy':np.__version__,'pandas':pd.__version__,'sklearn':sklearn.__version__},'contract_sha256':None})
  print('FINISHED',task,round(time.time()-start,1),flush=True)
 if __name__=='__main__':
  ap=argparse.ArgumentParser();ap.add_argument('cohort',choices=['CHARLS','ELSA']);ap.add_argument('outcome',choices=['diabe','hchole']);ap.add_argument('--stability',action='store_true');a=ap.parse_args();run(a.cohort,a.outcome,a.stability)

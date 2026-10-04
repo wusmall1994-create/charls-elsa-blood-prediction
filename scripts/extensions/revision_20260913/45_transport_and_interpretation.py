@@ -5,8 +5,8 @@ import importlib.util,json,hashlib,warnings
 import numpy as np,pandas as pd,joblib
 from sklearn.metrics import roc_auc_score
 ROOT=Path(os.environ["ANALYSIS_ROOT"])
-W=Path(__file__).resolve().parent
-spec=importlib.util.spec_from_file_location('suite',W.parent.parent/'yue/work/42_replication_sensitivity_suite.py')
+W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True)
+spec=importlib.util.spec_from_file_location('suite',Path(__file__).resolve().parents[3] / 'scripts/core/42_replication_sensitivity_suite.py')
 S=importlib.util.module_from_spec(spec);spec.loader.exec_module(S);S.SEED=20260914
 P=ROOT/'data_private/revision_20260913';P.mkdir(exist_ok=True)
 Q=W/'extension_results';Q.mkdir(exist_ok=True)

@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import json,importlib.util,hashlib
 import numpy as np,pandas as pd,joblib
-W=Path(__file__).resolve().parent;sp=importlib.util.spec_from_file_location('priority',W/'62_priority_analyses.py');M=importlib.util.module_from_spec(sp);sp.loader.exec_module(M)
+W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True);sp=importlib.util.spec_from_file_location('priority',Path(__file__).resolve().parents[3] / 'scripts/extensions/priority_extension_20260922/62_priority_analyses.py');M=importlib.util.module_from_spec(sp);sp.loader.exec_module(M)
 def native(x):
  if isinstance(x,np.ndarray):return [native(v) for v in x]
  if isinstance(x,np.generic):return native(x.item())

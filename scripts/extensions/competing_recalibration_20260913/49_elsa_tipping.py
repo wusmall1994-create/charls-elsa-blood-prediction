@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import pandas as pd,numpy as np,json
 from sklearn.metrics import roc_auc_score
-W=Path(__file__).resolve().parent;P=Path(os.environ["ANALYSIS_ROOT"]);E=next(Path(os.environ["ELSA_DATA_DIR"]).rglob('stata13_se'));rows=[];details=[]
+W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True);P=Path(os.environ["ANALYSIS_ROOT"]);E=next(Path(os.environ["ELSA_DATA_DIR"]).rglob('stata13_se'));rows=[];details=[]
 eol=pd.concat([pd.read_stata(E/f,columns=['idauniq','eidatey'],convert_categoricals=False) for f in ['elsa_endoflife_hcap2_w10.dta','wave_11_elsa_eol_eul.dta']]);known=set(eol.loc[eol.eidatey.between(2013,2018),'idauniq'])
 for s in ['stroke','lunge']:
  d=pd.read_pickle(P/f'data_private/replication_extensions/ELSA_{s}_rich_panel7_predictions.pkl').reset_index(drop=True);y=d.event.to_numpy().copy();missing=~d.evaluable.to_numpy();forced=missing&d.person_id.isin(known).to_numpy();y[forced]=1;pool=np.flatnonzero(missing&~forced);score=(d.blood-d.reference).to_numpy();orders={'higher_blood_increment':pool[np.argsort(-score[pool])],'lower_blood_increment':pool[np.argsort(score[pool])],'random':np.random.default_rng(20260915).permutation(pool)}

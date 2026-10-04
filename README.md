@@ -43,3 +43,21 @@ Do not commit source data, derived participant-level files, model objects contai
 ## Licence
 
 Code is released under the MIT License. The CHARLS and ELSA data remain subject to their own access and use conditions.
+
+## Validation status and execution preparation
+
+The release has been syntax checked and its internal Python file references have
+been audited. It has not been independently rerun end to end from raw releases.
+Syntax validation alone does not establish numerical reproducibility.
+
+Before running, create `data_private`, `qa_logs`, and `results` in `ANALYSIS_ROOT`.
+Extension scripts write to `ANALYSIS_ROOT/extension_work`; outputs remain local.
+Internal code imports resolve within this checkout, independently of the data root.
+Unavailable internal analysis-contract hashes are recorded as null; contracts
+are not required to calculate results. Statistical formulas and seeds are unchanged.
+
+Run the CHARLS cohort and model stages before the ELSA stages (38, 39), followed
+by replication extensions (41, 42), transport (45), mortality and recalibration
+(46–49), decision curves (55), panel analyses (61–64), and panel performance (68–69).
+Inspect each script's command-line arguments before running; numbered files are
+not a single automated pipeline. Full retraining is computationally expensive.

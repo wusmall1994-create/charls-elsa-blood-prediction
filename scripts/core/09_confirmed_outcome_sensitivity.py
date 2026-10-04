@@ -16,7 +16,7 @@ QA = PROJECT / "qa_logs"
 
 
 def load_modeling_module():
-    spec = spec_from_file_location("discrete_modeling", PROJECT / "scripts" / "04_discrete_time_models.py")
+    spec = spec_from_file_location("discrete_modeling", Path(__file__).resolve().parents[2] / 'scripts/core/04_discrete_time_models.py')
     module = module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)

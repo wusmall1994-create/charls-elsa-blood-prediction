@@ -30,7 +30,7 @@ MODELED_OUTCOMES = [
 
 
 def load_model_module():
-    path = PROJECT / "scripts" / "04_discrete_time_models.py"
+    path = Path(__file__).resolve().parents[2] / 'scripts/core/04_discrete_time_models.py'
     spec = spec_from_file_location("digestive_model_module", path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Could not import shared model functions from {path}")

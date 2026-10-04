@@ -26,7 +26,7 @@ N_BOOTSTRAP = 2000
 
 
 def load_cohort_module():
-    spec = spec_from_file_location("cohort_builder", PROJECT / "scripts" / "02_build_model_cohorts.py")
+    spec = spec_from_file_location("cohort_builder", Path(__file__).resolve().parents[2] / 'scripts/core/02_build_model_cohorts.py')
     module = module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)

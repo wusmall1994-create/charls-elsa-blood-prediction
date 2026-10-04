@@ -31,7 +31,7 @@ OUTCOMES = [
 
 
 def import_response_module():
-    path = PROJECT / "scripts" / "07_wave_response_weighting.py"
+    path = Path(__file__).resolve().parents[2] / 'scripts/core/07_wave_response_weighting.py'
     spec = spec_from_file_location("digestive_response_module", path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Could not import response model from {path}")
@@ -44,7 +44,7 @@ RESPONSE = import_response_module()
 
 
 def import_cohort_module():
-    path = PROJECT / "scripts" / "24_build_multoutcome_cohorts.py"
+    path = Path(__file__).resolve().parents[2] / 'scripts/core/24_build_multoutcome_cohorts.py'
     spec = spec_from_file_location("multoutcome_cohort_module_for_response", path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Could not import cohort functions from {path}")

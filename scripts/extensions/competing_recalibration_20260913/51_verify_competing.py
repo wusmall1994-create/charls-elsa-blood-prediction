@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 import importlib.util,json,numpy as np,pandas as pd
-W=Path(__file__).resolve().parent
-spec=importlib.util.spec_from_file_location('c',W/'48_competing_models.py');C=importlib.util.module_from_spec(spec);spec.loader.exec_module(C)
+W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True)
+spec=importlib.util.spec_from_file_location('c',Path(__file__).resolve().parents[3] / 'scripts/extensions/competing_recalibration_20260913/48_competing_models.py');C=importlib.util.module_from_spec(spec);spec.loader.exec_module(C)
 report=[]
 for s in C.outcomes:
  file=C.Q/f'{s}_report_first.json';d=json.loads(file.read_text());_,_,end,a=C.build(s,'validation','report_first');_,di,_,da=C.build(s,'development','report_first');_,dr,_,_=C.build(s,'development','death_first');assert di.equals(dr),'ordering sensitivity differs';assert a['same_wave_diagnosis_death']==0 and a['diagnosis_after_death_flag']==0

@@ -5,7 +5,7 @@ import importlib.util,json
 import numpy as np
 import pandas as pd
 ROOT=Path(os.environ["ANALYSIS_ROOT"])
-spec=importlib.util.spec_from_file_location('elsa_builder',ROOT/'scripts/core/38_build_elsa_checked_cohorts.py')
+spec=importlib.util.spec_from_file_location('elsa_builder',Path(__file__).resolve().parents[2] / 'scripts/core/38_build_elsa_checked_cohorts.py')
 B=importlib.util.module_from_spec(spec);spec.loader.exec_module(B)
 OUT=ROOT/'data_private/replication_extensions';OUT.mkdir(exist_ok=True)
 def build(w,h):
