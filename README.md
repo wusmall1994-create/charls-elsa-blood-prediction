@@ -17,7 +17,7 @@ Set ANALYSIS_ROOT to a writable private analysis directory, CHARLS_DATA_DIR to t
 | scripts/analyses/competing_recalibration/ | Mortality ascertainment, competing events, incomplete-outcome scenarios and cross-fitted recalibration |
 | scripts/analyses/decision_curves/ | Net benefit for common-panel and transported predictions |
 | scripts/analyses/panel_comparisons/ | Simplified indicators, biochemical restriction, landmark prediction and refitting stability |
-| scripts/analyses/panel_performance/ | Three-model calibration, Brier scores, decision curves, glucose-stratum contrasts and figures |
+| scripts/analyses/panel_performance/ | Comparator adequacy, frozen transport, common-fold recalibration, net benefit and figures |
 
 ## Execution dependencies
 
@@ -36,6 +36,18 @@ python scripts/analyses/panel_performance/70_glucose_stratum_net_benefit.py --pr
 Only load trusted private pickle files. Module 70 exports aggregate JSON/CSV estimates and input checksums; it does not export individual records.
 
 Inspect each script's arguments and input paths before execution. These are modular analysis stages, not a single automated command. Random seeds, wave-specific mappings, outcome definitions and scoring conventions are specified in the scripts. Date-shaped random seeds are numerical parameters, not version labels.
+
+## Informative comparators and common-core transport
+
+Module 71_comparator_transport.py evaluates glucose plus HbA1c and the seven-measure panel plus HbA1c against the existing diabetes models, preserving the original richer-reference participants and splits. The panel-plus-HbA1c contrast against glucose/HbA1c is nested; seven-measure versus glucose/HbA1c compares alternative assay combinations. Measured-marker summaries use unchanged predictions.
+
+For diabetes and lipid-related reports, all models use common-core non-laboratory predictors for bidirectional frozen transport and independent same-cohort temporal evaluation. Recalibration uses identical five-fold target splits across models, estimating intercept-only or intercept-and-slope functions outside the scored fold. The nominal horizon follows the target cohort. Net benefit is evaluated at 5%, 10% and 20%, with 10% the focus. Paired bootstrap intervals condition on disease-model and cross-fitted calibration predictions and exclude their estimation uncertainty. These analyses are exploratory and not multiplicity-adjusted.
+
+```text
+python scripts/analyses/panel_performance/71_comparator_transport.py --data-private <private-data-directory> --common-panel-dir <common-panel-directory> --panel-predictions-dir <panel-predictions-directory> --output-private <private-model-output-directory> --output-dir <aggregate-output-directory>
+```
+
+The common-panel directory supplies ELSA wave 4 and 6 people/interval pickles; panel-predictions supplies the paired diabetes predictions from module 62. CHARLS development/validation CSV files and original ELSA diabetes fold assignments are read under data-private. Only load trusted private pickle/model files. Tasks hba1c, frozen and evaluate can also be run separately with --task. Source data and private predictions are never exported; aggregate performance, paired contrasts, checksums and calibration coefficients are written to output-dir.
 
 ## Interpretation and reproducibility
 
