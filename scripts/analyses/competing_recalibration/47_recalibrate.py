@@ -7,10 +7,10 @@ from scipy.optimize import minimize_scalar
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import brier_score_loss,roc_auc_score
-W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True);P=Path(os.environ["ANALYSIS_ROOT"]);Q=W/'competing_results';Q.mkdir(exist_ok=True)
-out=P/'data_private/revision_competing';out.mkdir(exist_ok=True)
+W=Path(os.environ["ANALYSIS_ROOT"])/"analysis_work";W.mkdir(parents=True,exist_ok=True);P=Path(os.environ["ANALYSIS_ROOT"]);Q=W/'competing_results';Q.mkdir(exist_ok=True)
+out=P/'data_private/competing_events';out.mkdir(exist_ok=True)
 rows=[]
-for file in (P/'data_private/revision_20260913').glob('*.pkl'):
+for file in (P/'data_private/transport').glob('*.pkl'):
  d=pd.read_pickle(file);d=d.loc[d.evaluable].reset_index(drop=True);y=d.event.to_numpy();folds=list(StratifiedKFold(5,shuffle=True,random_state=20260915).split(d,y));rng=np.random.default_rng(20260915)
  for block in ['reference','blood']:
   z=logit(np.clip(d[block].to_numpy(),1e-8,1-1e-8));pred={'unchanged':d[block].to_numpy().copy(),'intercept':np.zeros(len(d)),'intercept_slope':np.zeros(len(d))}

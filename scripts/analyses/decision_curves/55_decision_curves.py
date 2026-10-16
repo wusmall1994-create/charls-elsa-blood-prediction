@@ -5,15 +5,15 @@ import numpy as np,pandas as pd,json,hashlib
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True);Q=W/'decision_curve_results';Q.mkdir(exist_ok=True)
+W=Path(os.environ["ANALYSIS_ROOT"])/"analysis_work";W.mkdir(parents=True,exist_ok=True);Q=W/'decision_curve_results';Q.mkdir(exist_ok=True)
 P=Path(os.environ["ANALYSIS_ROOT"]) / "data_private"
 T=np.round(np.arange(.01,.30001,.005),6);odds=T/(1-T);rows=[];summ=[];audit=[]
 plt.rcParams.update({'font.family':'Arial','font.size':9,'svg.fonttype':'none','axes.spines.top':False,'axes.spines.right':False,'legend.frameon':False})
 datasets=[]
 for c in ['CHARLS','ELSA']:
- for o in ['diabe','hchole']:datasets.append(('common',c,o,P/f'replication_extensions/{c}_{o}_rich_panel7_predictions.pkl'))
+ for o in ['diabe','hchole']:datasets.append(('common',c,o,P/f'common_panel/{c}_{o}_rich_panel7_predictions.pkl'))
 for c in ['CHARLS_to_ELSA','ELSA_to_CHARLS']:
- for o in ['diabe','hchole']:datasets.append(('transport',c,o,P/f'revision_competing/{c}_{o}_recalibrated.pkl'))
+ for o in ['diabe','hchole']:datasets.append(('transport',c,o,P/f'competing_events/{c}_{o}_recalibrated.pkl'))
 for family,c,o,path in datasets:
  d=pd.read_pickle(path);d=d.loc[d.evaluable].reset_index(drop=True);y=d.event.to_numpy(int);n=len(d)
  assert d.person_id.is_unique and set(y)=={0,1}

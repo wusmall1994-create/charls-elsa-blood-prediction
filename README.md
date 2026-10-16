@@ -1,63 +1,42 @@
-# Routine blood measures in CHARLS and ELSA: statistical analysis code
+# Routine blood measures in CHARLS and ELSA
 
-This repository contains the statistical analysis code used to evaluate the incremental predictive value of routine blood measures for subsequent chronic disease reports in CHARLS and ELSA.
+Statistical code for evaluating the incremental predictive value of a seven-measure blood panel across seven subsequent diagnosis-report outcomes. The analysis compares non-laboratory and simplified laboratory references, assesses calibration and illustrative net benefit, and evaluates frozen-model transport between cohorts.
 
-## Scope
+## Data and environment
 
-The repository contains code for cohort construction, discrete-time models, nested cross-validation, paired bootstrap comparisons, transport and recalibration, competing-event analyses, incomplete-outcome scenarios, simplified-panel and biochemical-restriction analyses, landmark analyses, calibration, Brier scores, and decision curves.
+Obtain authorized CHARLS and ELSA data from https://charls.pku.edu.cn/ and https://www.elsa-project.ac.uk/accessing-elsa-data. This repository distributes no participant records, fitted individual predictions, manuscript files or aggregate study results. Python package requirements are in requirements.txt; the analysis environment uses Python 3.12.
 
-No manuscript files, participant-level data, fitted participant-level predictions, personal identifiers, or aggregate study results are included.
+Set ANALYSIS_ROOT to a writable private analysis directory, CHARLS_DATA_DIR to the authorized CHARLS releases and ELSA_DATA_DIR to the authorized ELSA releases. Create data_private, qa_logs and results under ANALYSIS_ROOT. Analysis modules create analysis_work for aggregate outputs. Shared code imports resolve within this repository. Keep all source and derived participant-level records private.
 
-## Data access
+## Analysis modules
 
-CHARLS and ELSA are third-party datasets. Researchers must obtain the data directly from the respective custodians and comply with their registration and data-use conditions. The authors cannot redistribute these data.
+| Location | Function |
+| --- | --- |
+| scripts/core/ | Shared cohort, model and response-weighting functions; CHARLS 14-measure benchmark; ELSA and common-panel evaluation |
+| scripts/analyses/transport/ | Frozen-model transfer and paired performance comparisons |
+| scripts/analyses/competing_recalibration/ | Mortality ascertainment, competing events, incomplete-outcome scenarios and cross-fitted recalibration |
+| scripts/analyses/decision_curves/ | Net benefit for common-panel and transported predictions |
+| scripts/analyses/panel_comparisons/ | Simplified indicators, biochemical restriction, landmark prediction and refitting stability |
+| scripts/analyses/panel_performance/ | Three-model calibration, Brier scores, decision curves and figures |
 
-- CHARLS: https://charls.pku.edu.cn/
-- ELSA: https://www.elsa-project.ac.uk/accessing-elsa-data
+## Execution dependencies
 
-## Configuration
+1. CHARLS: 23 examines outcome feasibility, 24 constructs cohorts, 25 fits the benchmark and 26 evaluates paired uncertainty. Modules 27–35 provide the assay, nonlinear, cross-outcome, mortality, response-weighting and participant-overlap checks. Modules 02, 04 and 07 supply shared functions; module 01 audits blood availability.
+2. ELSA: 37 checks mappings, 38 constructs cohorts, 39 fits nested models and 40 verifies saved outputs.
+3. Common panel: 41_build_common_panel_cohorts.py constructs the common-panel cohorts; 42_replication_sensitivity_suite.py fits and evaluates paired models and sensitivities.
+4. Transport: run 45_transport_and_interpretation.py and verify_transport.py.
+5. Competing events and updating: run 46–49, then 51_verify_competing.py. Decision curves in 55 require the common-panel predictions and transported/recalibrated outputs.
+6. Panel comparisons: run 61_feasibility.py, then 62_panel_analyses.py for each cohort/outcome and its stability run; finish with 63_verify_panel.py and 64_export_panel.py.
+7. Performance: run 68_panel_performance.py, then 69_panel_figures.py.
 
-Set these environment variables before running the scripts:
+Inspect each script's arguments and input paths before execution. These are modular analysis stages, not a single automated command. Random seeds, wave-specific mappings, outcome definitions and scoring conventions are specified in the scripts. Date-shaped random seeds are numerical parameters, not version labels.
 
-- `ANALYSIS_ROOT`: a writable local project directory. Derived participant-level files and outputs are written below this directory and must remain private.
-- `CHARLS_DATA_DIR`: directory containing the authorized CHARLS releases.
-- `ELSA_DATA_DIR`: directory containing the authorized ELSA releases.
+## Interpretation and reproducibility
 
-The scripts retain the file names and wave-specific variable mappings used in the analysis. Because the custodians distribute data under access conditions, the repository does not include test extracts or synthetic copies of the source files.
+The endpoints are subsequent diagnosis reports. The seven-outcome common-panel comparison is principal; the 13 modeled CHARLS outcomes provide supporting evidence, with cancer descriptive. Simplified-panel, restriction, landmark, transport, recalibration and decision-curve analyses are exploratory. Diagnostic-proximity classification is post hoc. The study was not prospectively registered. Conditional bootstrap intervals do not represent full retraining uncertainty; refitting checks are reported separately.
 
-## Code organization
+Syntax and internal references are checked. Saved-result and saved-model verification do not constitute an independent end-to-end rerun from raw releases. Such a rerun has not been completed.
 
-- `scripts/core/`: cohort construction, primary models, validation, sensitivity analyses, ELSA replication, and statistical audits.
-- `scripts/extensions/`: model transport, recalibration, competing-event analyses, decision curves, simplified-panel comparisons, biochemical restrictions, landmark analyses, and performance figures.
+## Privacy and licence
 
-Numbered filenames indicate the analytical sequence. Some later scripts require private intermediate files created by earlier scripts. Manuscript-generation and document-editing programs have been excluded.
-
-## Environment
-
-Python dependencies are listed in `requirements.txt`. The analysis was developed for Python 3.12. Create an isolated environment and install the listed packages before running the code.
-
-## Privacy and data governance
-
-Do not commit source data, derived participant-level files, model objects containing participant-level information, or local `.env` files. The `.gitignore` excludes the principal restricted file types and directories, but users remain responsible for complying with the CHARLS and ELSA terms of use.
-
-## Licence
-
-Code is released under the MIT License. The CHARLS and ELSA data remain subject to their own access and use conditions.
-
-## Validation status and execution preparation
-
-The release has been syntax checked and its internal Python file references have
-been audited. It has not been independently rerun end to end from raw releases.
-Syntax validation alone does not establish numerical reproducibility.
-
-Before running, create `data_private`, `qa_logs`, and `results` in `ANALYSIS_ROOT`.
-Extension scripts write to `ANALYSIS_ROOT/extension_work`; outputs remain local.
-Internal code imports resolve within this checkout, independently of the data root.
-Unavailable internal analysis-contract hashes are recorded as null; contracts
-are not required to calculate results. Statistical formulas and seeds are unchanged.
-
-Run the CHARLS cohort and model stages before the ELSA stages (38, 39), followed
-by replication extensions (41, 42), transport (45), mortality and recalibration
-(46–49), decision curves (55), panel analyses (61–64), and panel performance (68–69).
-Inspect each script's command-line arguments before running; numbered files are
-not a single automated pipeline. Full retraining is computationally expensive.
+Do not commit source data, derived individual records, private model objects, credentials or local environment files. Code is licensed under MIT; the CHARLS and ELSA data remain subject to their custodians' access conditions.

@@ -9,8 +9,8 @@ for cohort in ['CHARLS','ELSA']:
     d=pd.read_csv(P/'multoutcome'/folder/(phase+'.csv.gz'),dtype={'person_id':str});it=pd.read_csv(P/'multoutcome'/folder/(phase+'_intervals.csv.gz'),dtype={'person_id':str});wv='source_wave'
    else:
     w=4 if phase=='development' else 6
-    d=pd.read_pickle(P/f'replication_extensions/elsa_w{w}_people.pkl');d=d.loc[d.outcome.eq(outcome)]
-    it=pd.read_pickle(P/f'replication_extensions/elsa_w{w}_intervals.pkl');it=it.loc[it.outcome.eq(outcome)];wv='wave'
+    d=pd.read_pickle(P/f'common_panel/elsa_w{w}_people.pkl');d=d.loc[d.outcome.eq(outcome)]
+    it=pd.read_pickle(P/f'common_panel/elsa_w{w}_intervals.pkl');it=it.loc[it.outcome.eq(outcome)];wv='wave'
    if len(out)==0:print('CHARLS fields',d.columns.tolist(),'intervals',it.columns.tolist())
    if cohort=='ELSA' and outcome=='diabe' and phase=='validation':print('ELSA fields',d.columns.tolist(),'intervals',it.columns.tolist())
    fast=d.fasting_sample.eq(1);obs=fast&d.glucose.notna()&d.hba1c.notna()
@@ -22,4 +22,4 @@ for cohort in ['CHARLS','ELSA']:
    for key,mask in [('measured_glycemia',obs),('below_diabetes',norm),('normal_glycemia',strict),('measured_lipids',lip),('normal_lipids',ln)]:row[key]={'n':int(mask.sum()),'events':int(d.loc[mask,'event'].sum())}
    first=it[wv].min();lab='label' if cohort=='ELSA' else 'event_this_interval';eligible=it.loc[it[wv].eq(first)&it[lab].eq(0),'person_id'];later=it.loc[it[wv].gt(first)&it.person_id.isin(eligible)]
    row['landmark']={'n':int(later.person_id.nunique()),'events':int(later[lab].sum())};out.append(row)
-print(json.dumps(out,indent=2));Path(__file__).with_name('priority_feasibility.json').write_text(json.dumps(out,indent=2))
+print(json.dumps(out,indent=2));Path(__file__).with_name('panel_feasibility.json').write_text(json.dumps(out,indent=2))

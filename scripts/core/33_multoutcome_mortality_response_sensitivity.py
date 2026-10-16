@@ -32,7 +32,7 @@ OUTCOMES = [
 
 def import_response_module():
     path = Path(__file__).resolve().parents[2] / 'scripts/core/07_wave_response_weighting.py'
-    spec = spec_from_file_location("digestive_response_module", path)
+    spec = spec_from_file_location("response_module", path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Could not import response model from {path}")
     module = module_from_spec(spec)

@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 import pandas as pd,numpy as np,json
-R=Path(os.environ["CHARLS_DATA_DIR"]);P=Path(os.environ["ANALYSIS_ROOT"]);W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True)
-out=P/'data_private/revision_competing';out.mkdir(exist_ok=True)
+R=Path(os.environ["CHARLS_DATA_DIR"]);P=Path(os.environ["ANALYSIS_ROOT"]);W=Path(os.environ["ANALYSIS_ROOT"])/"analysis_work";W.mkdir(parents=True,exist_ok=True)
+out=P/'data_private/competing_events';out.mkdir(exist_ok=True)
 rows=[]
 for year in [2013,2015,2018,2020]:
  f=R/'2013/CHARLS2013_Dataset/Exit_Interview.dta' if year==2013 else R/f'{year}/CHARLS{year}'+Path('') if False else None

@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import json,importlib.util,hashlib
 import numpy as np,pandas as pd,joblib
-W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True);sp=importlib.util.spec_from_file_location('priority',Path(__file__).resolve().parents[3] / 'scripts/extensions/priority_extension_20260922/62_priority_analyses.py');M=importlib.util.module_from_spec(sp);sp.loader.exec_module(M)
+W=Path(os.environ["ANALYSIS_ROOT"])/"analysis_work";W.mkdir(parents=True,exist_ok=True);sp=importlib.util.spec_from_file_location('panel',Path(__file__).resolve().parents[3] / 'scripts/analyses/panel_comparisons/62_panel_analyses.py');M=importlib.util.module_from_spec(sp);sp.loader.exec_module(M)
 def native(x):
  if isinstance(x,np.ndarray):return [native(v) for v in x]
  if isinstance(x,np.generic):return native(x.item())
@@ -43,18 +43,14 @@ for c in ['CHARLS','ELSA']:
    for k in ['people','intervals']:
     f=M.OLD/f'elsa_w6_{k}.pkl';manifest[str(f.relative_to(M.P))]=hashlib.sha256(f.read_bytes()).hexdigest()
 M.dump(M.Q/'input_hashes.json',manifest)
-(M.Q/'README.md').write_text('''# Baseline status and parsimonious panel extension
+(M.Q/'README.md').write_text("""# Simplified panels, biochemical restrictions and landmark prediction
 
-Recorded 22 September 2026. These aggregate files supplement the prior study; participant records, identifiers, fold membership and binary fitted models are not redistributed.
+Run 61_feasibility.py to inspect eligible samples. Run 62_panel_analyses.py for CHARLS and ELSA with diabe and hchole, then repeat each job with --stability. Run 63_verify_panel.py and 64_export_panel.py after all four jobs complete.
 
-Run 61_feasibility.py to audit available samples. The dated analysis contract records the subsequent fitting rules. Run 62_priority_analyses.py CHARLS diabe (and the other three cohort/outcome combinations), then repeat with --stability. Run 63_priority_verify.py after all four main jobs, followed by 64_priority_exports.py. The verification script restores the original seed 20260913 for unchanged all-sample bootstrap comparisons; new sensitivity bootstraps use 20260922. This compatibility adjustment changes no predictions, samples or fitted models.
+These scripts use the shared core modules and private cohort files under ANALYSIS_ROOT. Full-sample bootstrap seed is 20260913; restriction and landmark seed is 20260922. Source hashes identify inputs. Statistical specifications and software versions are recorded with the results.
 
-The scripts import project scripts 42_replication_sensitivity_suite.py, 39_train_elsa_nested_models.py and 38_build_elsa_checked_cohorts.py. Copies are included as dependencies. Set R/ROOT/P paths to the authorized local project as needed; original private checked cohorts and interval files are required. Upstream construction code is in the existing archive. The source-data hashes identify exact inputs. No original analysis cache is overwritten.
+paired_results.csv contains three pairwise model comparisons. cohort_audit.json describes populations and measured distributions. tuning.csv records penalties and features. baseline_model_parameters.json contains preprocessing and coefficients for 36 full-population pipelines across two outcomes; it contains no individual predictions.
 
-paired_results.csv contains all three pairwise comparisons, including unfavorable results. Baseline reference/full predictions are unchanged. cohort_audit.json includes population counts and measured distributions. tuning.csv records selected penalties and features without participant IDs. baseline_model_parameters.json contains the 36 original-population reference/simple/full pipelines as coefficient and preprocessing metadata, not participant-level predictions. These cover the two positive-reference outcomes and richer reference only, not all seven outcome models. Fixed nominal schedules and categorical handling are in the scripts. Current package versions are recorded in each job JSON.
-
-refitting_stability.csv distinguishes five fully retuned ELSA nested splits from 50 CHARLS development participant bootstraps with fixed selected C. The ranges are descriptive refit spread, not sampling confidence intervals. Restricted and landmark results retain conditional bootstrap intervals; there is no claim that every sensitivity was subjected to full refitting uncertainty.
-
-Threshold restrictions classify measured biochemical status, not confirmed absence of disease or treatment. Landmark analysis resets time, requires an observed negative first follow-up and uses the next observed scheduled wave only. CHARLS and ELSA retain different baseline-to-landmark gaps and different evaluation architectures.
-''',encoding='utf-8')
-print('Exported',len(summ),'metric comparisons;',len(params),'parameter sets;',len(tune),'new fits')
+refitting_stability.csv summarizes five nested ELSA splits and 50 CHARLS development bootstraps with fixed selected penalties. These ranges describe refit variation, not confidence intervals. Restrictions classify measured biochemical status and do not establish absence of disease or treatment. Landmark prediction requires a negative first follow-up and evaluates the next scheduled wave.
+""",encoding='utf-8')
+print('Exported',len(summ),'metric comparisons;',len(params),'parameter sets;',len(tune),'model fits')

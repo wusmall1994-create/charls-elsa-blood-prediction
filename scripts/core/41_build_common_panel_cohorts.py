@@ -7,7 +7,7 @@ import pandas as pd
 ROOT=Path(os.environ["ANALYSIS_ROOT"])
 spec=importlib.util.spec_from_file_location('elsa_builder',Path(__file__).resolve().parents[2] / 'scripts/core/38_build_elsa_checked_cohorts.py')
 B=importlib.util.module_from_spec(spec);spec.loader.exec_module(B)
-OUT=ROOT/'data_private/replication_extensions';OUT.mkdir(exist_ok=True)
+OUT=ROOT/'data_private/common_panel';OUT.mkdir(exist_ok=True)
 def build(w,h):
     n=B.read('wave_4_nurse_data.dta' if w==4 else 'wave_6_elsa_nurse_data_v2.dta').set_index('idauniq')
     edu=B.read(f'wave_{w}_ifs_derived_variables.dta').set_index('idauniq')
@@ -65,5 +65,5 @@ def build(w,h):
 if __name__=='__main__':
     h=B.read('gh_elsa_h.dta').set_index('idauniq')
     qa=[build(w,h) for w in [6,4]]
-    (ROOT/'qa_logs/replication_extension_cohorts.json').write_text(json.dumps(qa,indent=2),encoding='utf-8')
+    (ROOT/'qa_logs/common_panel_cohorts.json').write_text(json.dumps(qa,indent=2),encoding='utf-8')
     print(json.dumps(qa,indent=2))

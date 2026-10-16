@@ -5,12 +5,12 @@ import importlib.util,json,hashlib,warnings
 import numpy as np,pandas as pd,joblib
 from sklearn.metrics import roc_auc_score
 ROOT=Path(os.environ["ANALYSIS_ROOT"])
-W=Path(os.environ["ANALYSIS_ROOT"])/"extension_work";W.mkdir(parents=True,exist_ok=True)
+W=Path(os.environ["ANALYSIS_ROOT"])/"analysis_work";W.mkdir(parents=True,exist_ok=True)
 spec=importlib.util.spec_from_file_location('suite',Path(__file__).resolve().parents[3] / 'scripts/core/42_replication_sensitivity_suite.py')
 S=importlib.util.module_from_spec(spec);spec.loader.exec_module(S);S.SEED=20260914
-P=ROOT/'data_private/revision_20260913';P.mkdir(exist_ok=True)
-Q=W/'extension_results';Q.mkdir(exist_ok=True)
-EXT=ROOT/'data_private/replication_extensions'
+P=ROOT/'data_private/transport';P.mkdir(exist_ok=True)
+Q=W/'transport_results';Q.mkdir(exist_ok=True)
+EXT=ROOT/'data_private/common_panel'
 def write(n,x):(Q/n).write_text(json.dumps(x,indent=2,allow_nan=False),encoding='utf-8')
 def charls(s):
  d=pd.read_csv(ROOT/f'data_private/multoutcome/{S.MAP[s]}/validation.csv.gz',dtype={'person_id':str}).rename(columns=S.RENAME)

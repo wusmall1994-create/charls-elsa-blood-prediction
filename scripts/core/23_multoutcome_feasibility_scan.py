@@ -301,7 +301,7 @@ def main() -> None:
         "- Primary-feasible: at least 200 development and 200 non-overlapping evaluation events.\n"
         "- Exploratory-feasible: at least 100 events in each cohort but one or both below 200.\n"
         "- Below 100 evaluation events: do not use as a primary cross-outcome benchmark.\n"
-        "- Outcome-specific non-overlap is the direct extension of the digestive-disease design.\n"
+        "- Development and evaluation participants do not overlap within each outcome-specific risk set.\n"
         "- Common-union exclusion is reported as a stricter comparability sensitivity analysis.\n"
         "- Event counts alone do not determine inclusion; wording consistency, endpoint validity, "
         "diagnostic overlap, missingness, and precision must also be reviewed.\n",

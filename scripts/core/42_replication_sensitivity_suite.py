@@ -15,7 +15,7 @@ from threadpoolctl import threadpool_limits
 ROOT=Path(os.environ["ANALYSIS_ROOT"])
 spec=importlib.util.spec_from_file_location('elsa_train',Path(__file__).resolve().parents[2] / 'scripts/core/39_train_elsa_nested_models.py')
 T=importlib.util.module_from_spec(spec);spec.loader.exec_module(T);B=T.B
-OUT=ROOT/'data_private/replication_extensions';QA=ROOT/'qa_logs';SEED=20260913
+OUT=ROOT/'data_private/common_panel';QA=ROOT/'qa_logs';SEED=20260913
 MAP={'diabe':'diabetes','hchole':'dyslipidemia','hibpe':'hypertension','hearte':'heart_disease','arthre':'arthritis_or_rheumatism','stroke':'stroke','lunge':'chronic_lung_disease'}
 RENAME={'hypertension':'hibpe','diabetes':'diabe','heart_disease':'hearte','stroke':'stroke','lung_disease':'lunge','arthritis':'arthre','asthma':'asthmae','cancer':'cancre'}
 PANELS={'panel7':B.BLOOD,'panel6':[c for c in B.BLOOD if c!='glucose'],'panel8':B.BLOOD+['hba1c'],'fasting7':B.BLOOD}

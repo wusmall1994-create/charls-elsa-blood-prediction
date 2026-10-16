@@ -26,7 +26,7 @@ OUTCOMES = [
 
 def import_model_module():
     path = Path(__file__).resolve().parents[2] / 'scripts/core/04_discrete_time_models.py'
-    spec = spec_from_file_location("digestive_model_module_nonlinear", path)
+    spec = spec_from_file_location("model_module_nonlinear", path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Could not import model functions from {path}")
     module = module_from_spec(spec)

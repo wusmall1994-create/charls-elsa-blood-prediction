@@ -5,7 +5,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import pandas as pd
-Q=Path(__file__).resolve().parent/'panel_performance_results'
+Q=Path(os.environ['ANALYSIS_ROOT'])/'analysis_work/panel_performance_results'
+Q.mkdir(parents=True,exist_ok=True)
 plt.rcParams.update({'font.family':'Arial','font.size':9,'svg.fonttype':'none','axes.spines.top':False,'axes.spines.right':False,'legend.frameon':False})
 def save(fig,name):
  fig.savefig(Q/(name+'.png'),dpi=300,bbox_inches='tight');fig.savefig(Q/(name+'.svg'),bbox_inches='tight');plt.close(fig)
@@ -19,7 +20,7 @@ box(.03,.81,.94,.17,'Seven shared diagnosis-report outcomes','Common seven-measu
 box(.03,.54,.45,.20,'Simplified versus complete panels','Diabetes: glucose; lipid reports: three lipids\nSame participants and paired folds\nAUROC, Brier, calibration and net benefit')
 box(.52,.54,.45,.20,'Baseline status and later reports','Require observed biochemical measurements\nRestrict to below-threshold values\nNegative first follow-up → two-year landmark')
 arrow(.26,.81,.26,.74);arrow(.74,.81,.74,.74)
-box(.03,.29,.94,.18,'Checks on interpretation','Glucose availability strata; repeated fitting; follow-up and mortality sensitivities\nFrozen transfer in both directions; local recalibration\nOriginal 13-outcome CHARLS benchmark provides supporting evidence')
+box(.03,.29,.94,.18,'Checks on interpretation','Glucose availability strata; repeated fitting; follow-up and mortality sensitivities\nFrozen transfer in both directions; local recalibration\n13-outcome CHARLS benchmark provides supporting evidence')
 arrow(.26,.54,.26,.47);arrow(.74,.54,.74,.47)
 box(.03,.03,.94,.19,'Potential use of existing blood results','Consider further follow-up or repeat assessment\nIllustrative action thresholds, not a validated clinical policy\nSubsequent diagnosis reports do not establish biological disease onset')
 arrow(.5,.29,.5,.22);save(fig,'analysis_flow')
