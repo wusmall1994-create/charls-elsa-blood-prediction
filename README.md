@@ -17,7 +17,7 @@ Set ANALYSIS_ROOT to a writable private analysis directory, CHARLS_DATA_DIR to t
 | scripts/analyses/competing_recalibration/ | Mortality ascertainment, competing events, incomplete-outcome scenarios and cross-fitted recalibration |
 | scripts/analyses/decision_curves/ | Net benefit for common-panel and transported predictions |
 | scripts/analyses/panel_comparisons/ | Simplified indicators, biochemical restriction, landmark prediction and refitting stability |
-| scripts/analyses/panel_performance/ | Three-model calibration, Brier scores, decision curves and figures |
+| scripts/analyses/panel_performance/ | Three-model calibration, Brier scores, decision curves, glucose-stratum contrasts and figures |
 
 ## Execution dependencies
 
@@ -27,7 +27,13 @@ Set ANALYSIS_ROOT to a writable private analysis directory, CHARLS_DATA_DIR to t
 4. Transport: run 45_transport_and_interpretation.py and verify_transport.py.
 5. Competing events and updating: run 46–49, then 51_verify_competing.py. Decision curves in 55 require the common-panel predictions and transported/recalibrated outputs.
 6. Panel comparisons: run 61_feasibility.py, then 62_panel_analyses.py for each cohort/outcome and its stability run; finish with 63_verify_panel.py and 64_export_panel.py.
-7. Performance: run 68_panel_performance.py, then 69_panel_figures.py.
+7. Performance: run 68_panel_performance.py, then 69_panel_figures.py. Module 70_glucose_stratum_net_benefit.py evaluates exploratory between-stratum differences in complete-minus-simplified net benefit using 20,000 participant bootstrap samples within glucose-availability strata. Models remain paired and predictions fixed; sampling is not stratified by outcome. The 10% threshold is the focus of interpretation, with 5% and 20% supporting. Intervals are pointwise and not multiplicity-adjusted.
+
+```text
+python scripts/analyses/panel_performance/70_glucose_stratum_net_benefit.py --predictions <private-ELSA_diabe_all_predictions.pkl> --people <private-elsa_w6_people.pkl> --output-dir <aggregate-output-directory>
+```
+
+Only load trusted private pickle files. Module 70 exports aggregate JSON/CSV estimates and input checksums; it does not export individual records.
 
 Inspect each script's arguments and input paths before execution. These are modular analysis stages, not a single automated command. Random seeds, wave-specific mappings, outcome definitions and scoring conventions are specified in the scripts. Date-shaped random seeds are numerical parameters, not version labels.
 
