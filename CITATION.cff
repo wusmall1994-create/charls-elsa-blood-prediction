@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "Please cite this software when using the analysis code."
+type: software
+title: "Routine blood measures in CHARLS and ELSA: analysis code"
+version: 1.0.0
+license: MIT
+repository-code: "https://github.com/wusmall1994-create/charls-elsa-blood-prediction"
+url: "https://github.com/wusmall1994-create/charls-elsa-blood-prediction"
+abstract: "Code for paired incremental prediction comparisons, informative laboratory comparators, frozen cross-cohort transport, cross-fitted recalibration and pipeline-refitting sensitivity analyses for subsequent physician-diagnosis reports. Participant-level data are excluded."
+authors:
+  - family-names: "Liang"
+    given-names: "Huadong"
+    affiliation: "Longyan First Affiliated Hospital of Fujian Medical University"
+  - family-names: "Wu"
+    given-names: "Xiaoxin"
+    affiliation: "Longyan First Affiliated Hospital of Fujian Medical University"
+  - family-names: "Qiu"
+    given-names: "Rongjin"
+    affiliation: "Longyan First Affiliated Hospital of Fujian Medical University"
+  - family-names: "Huang"
+    given-names: "Shumin"
+    affiliation: "Longyan First Affiliated Hospital of Fujian Medical University"

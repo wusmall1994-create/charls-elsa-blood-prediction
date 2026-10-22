@@ -13,7 +13,7 @@ derived/
 # Generated results and local environments
 results/
 qa_logs/
-figures/
+/figures/
 __pycache__/
 *.py[cod]
 .venv/

@@ -1,60 +1,70 @@
 # Routine blood measures in CHARLS and ELSA
 
-Statistical code for evaluating the incremental predictive value of a seven-measure blood panel across seven subsequent diagnosis-report outcomes. The analysis compares non-laboratory and simplified laboratory references, assesses calibration and illustrative net benefit, and evaluates frozen-model transport between cohorts.
+Analysis code for **Incremental predictive value of routine blood panels for physician-diagnosis reports in two ageing cohorts**.
 
-## Data and environment
+The principal analysis compares a seven-measure blood panel with core and richer non-laboratory models across seven subsequent physician-diagnosis-report outcomes. Exploratory analyses assess informative laboratory comparators, measurement availability, biochemical restriction, landmark prediction, frozen model transport, target recalibration and illustrative net benefit. A 14-measure CHARLS benchmark supplies supporting results across 13 modeled outcomes; cancer is descriptive.
 
-Obtain authorized CHARLS and ELSA data from https://charls.pku.edu.cn/ and https://www.elsa-project.ac.uk/accessing-elsa-data. This repository distributes no participant records, fitted individual predictions, manuscript files or aggregate study results. Python package requirements are in requirements.txt; the analysis environment uses Python 3.12.
+## Data access and private workspace
 
-Set ANALYSIS_ROOT to a writable private analysis directory, CHARLS_DATA_DIR to the authorized CHARLS releases and ELSA_DATA_DIR to the authorized ELSA releases. Create data_private, qa_logs and results under ANALYSIS_ROOT. Analysis modules create analysis_work for aggregate outputs. Shared code imports resolve within this repository. Keep all source and derived participant-level records private.
+Obtain authorized CHARLS data from https://charls.pku.edu.cn/ and ELSA data from https://www.elsa-project.ac.uk/accessing-elsa-data. Registration and data-use conditions are controlled by the data custodians. This repository contains source code and citation metadata; it excludes participant records, individual predictions, private fitted objects, manuscripts and editing logs.
 
-## Analysis modules
+Set `ANALYSIS_ROOT` to a writable private workspace, `CHARLS_DATA_DIR` to the authorized CHARLS releases and `ELSA_DATA_DIR` to the authorized ELSA releases. Create `data_private`, `qa_logs` and `results` under `ANALYSIS_ROOT`; analysis stages also use `analysis_work`. Keep the code checkout separate from this private workspace. Detailed wave and field mappings are defined in `scripts/core/`.
 
-| Location | Function |
-| --- | --- |
-| scripts/core/ | Shared cohort, model and response-weighting functions; CHARLS 14-measure benchmark; ELSA and common-panel evaluation |
-| scripts/analyses/transport/ | Frozen-model transfer and paired performance comparisons |
-| scripts/analyses/competing_recalibration/ | Mortality ascertainment, competing events, incomplete-outcome scenarios and cross-fitted recalibration |
-| scripts/analyses/decision_curves/ | Net benefit for common-panel and transported predictions |
-| scripts/analyses/panel_comparisons/ | Simplified indicators, biochemical restriction, landmark prediction and refitting stability |
-| scripts/analyses/panel_performance/ | Comparator adequacy, frozen transport, common-fold recalibration, net benefit and figures |
+## Software
 
-## Execution dependencies
+Python 3.12 is used for the analyses. `requirements.txt` specifies compatible package ranges; `requirements-tested.txt` records the package versions in the environment used to check the released code and run the paired pipeline-refitting analysis. `pyreadstat` is an optional raw-file import dependency listed in `requirements.txt` and is not needed for the trusted intermediate-file checks. R is used for the transport decision-curve figure; package versions and commands are in `R-dependencies.md`. No software installation is performed by the scripts.
 
-1. CHARLS: 23 examines outcome feasibility, 24 constructs cohorts, 25 fits the benchmark and 26 evaluates paired uncertainty. Modules 27–35 provide the assay, nonlinear, cross-outcome, mortality, response-weighting and participant-overlap checks. Modules 02, 04 and 07 supply shared functions; module 01 audits blood availability.
-2. ELSA: 37 checks mappings, 38 constructs cohorts, 39 fits nested models and 40 verifies saved outputs.
-3. Common panel: 41_build_common_panel_cohorts.py constructs the common-panel cohorts; 42_replication_sensitivity_suite.py fits and evaluates paired models and sensitivities.
-4. Transport: run 45_transport_and_interpretation.py and verify_transport.py.
-5. Competing events and updating: run 46–49, then 51_verify_competing.py. Decision curves in 55 require the common-panel predictions and transported/recalibrated outputs.
-6. Panel comparisons: run 61_feasibility.py, then 62_panel_analyses.py for each cohort/outcome and its stability run; finish with 63_verify_panel.py and 64_export_panel.py.
-7. Performance: run 68_panel_performance.py, then 69_panel_figures.py. Module 70_glucose_stratum_net_benefit.py evaluates exploratory between-stratum differences in complete-minus-simplified net benefit using 20,000 participant bootstrap samples within glucose-availability strata. Models remain paired and predictions fixed; sampling is not stratified by outcome. The 10% threshold is the focus of interpretation, with 5% and 20% supporting. Intervals are pointwise and not multiplicity-adjusted.
+## Analysis modules and execution order
 
-```text
-python scripts/analyses/panel_performance/70_glucose_stratum_net_benefit.py --predictions <private-ELSA_diabe_all_predictions.pkl> --people <private-elsa_w6_people.pkl> --output-dir <aggregate-output-directory>
-```
+| Stage | Location and entry points | Inputs and outputs |
+| --- | --- | --- |
+| CHARLS construction and supporting benchmark | `scripts/core/23`–`35`; shared functions in `02`, `04`, `07`; blood audit in `01` | Authorized releases to private cohorts, predictions and aggregate summaries |
+| ELSA construction and nested evaluation | `scripts/core/37`–`40` | Authorized interview/nurse releases to private people/interval files and predictions |
+| Seven-outcome common panel | `scripts/core/41_build_common_panel_cohorts.py`, `42_replication_sensitivity_suite.py` | Cohorts to paired common-panel predictions and aggregate metrics |
+| Frozen transport | `scripts/analyses/transport/45_transport_and_interpretation.py`, `verify_transport.py` | Source pipelines and target cohorts to private transferred predictions and aggregate checks |
+| Mortality, missing outcomes and updating | `scripts/analyses/competing_recalibration/46`–`51` | Cohorts/predictions to competing-event and outcome-assignment estimates |
+| Reference/panel decision curves | `scripts/analyses/decision_curves/55_decision_curves.py` | Paired predictions to threshold-specific net benefit |
+| Simplified comparators and restrictions | `scripts/analyses/panel_comparisons/61`–`64` | Matched cohorts to simplified/full predictions, restriction and landmark results, fixed-penalty refitting checks |
+| Calibration, Brier scores and availability contrast | `scripts/analyses/panel_performance/68`–`70` | Paired predictions to prediction-error, calibration and between-stratum net-benefit summaries |
+| HbA1c comparators and common-core transport | `scripts/analyses/panel_performance/71_comparator_transport.py` | Matched cohorts to nested/alternative-assay comparisons, frozen and cross-fitted recalibrated predictions |
+| Paired pipeline refitting | `scripts/analyses/panel_performance/72_refitting_validation.py` | Private cohorts to 100 paired bootstrap repetitions, tuning metadata and descriptive metric summaries |
+| Transport decision-curve figure | `scripts/figures/` | Private evaluated predictions to aggregate curve CSV, then PNG/SVG |
 
-Only load trusted private pickle files. Module 70 exports aggregate JSON/CSV estimates and input checksums; it does not export individual records.
+Inspect each script's arguments and input paths before execution. These are dependent analysis stages, not a single-command pipeline. Module 62 runs separately for CHARLS/ELSA and diabetes/lipid-related reports, with its stability option where applicable. Run its verification and export stages after the model jobs. Module 68 precedes 69; module 71 uses common-panel cohorts and saved module-62 diabetes predictions. Only load trusted pickle and model files.
 
-Inspect each script's arguments and input paths before execution. These are modular analysis stages, not a single automated command. Random seeds, wave-specific mappings, outcome definitions and scoring conventions are specified in the scripts. Date-shaped random seeds are numerical parameters, not version labels.
-
-## Informative comparators and common-core transport
-
-Module 71_comparator_transport.py evaluates glucose plus HbA1c and the seven-measure panel plus HbA1c against the existing diabetes models, preserving the original richer-reference participants and splits. The panel-plus-HbA1c contrast against glucose/HbA1c is nested; seven-measure versus glucose/HbA1c compares alternative assay combinations. Measured-marker summaries use unchanged predictions.
-
-For diabetes and lipid-related reports, all models use common-core non-laboratory predictors for bidirectional frozen transport and independent same-cohort temporal evaluation. Recalibration uses identical five-fold target splits across models, estimating intercept-only or intercept-and-slope functions outside the scored fold. The nominal horizon follows the target cohort. Net benefit is evaluated at 5%, 10% and 20%, with 10% the focus. Paired bootstrap intervals condition on disease-model and cross-fitted calibration predictions and exclude their estimation uncertainty. These analyses are exploratory and not multiplicity-adjusted.
+### HbA1c comparisons and recalibration
 
 ```text
 python scripts/analyses/panel_performance/71_comparator_transport.py --data-private <private-data-directory> --common-panel-dir <common-panel-directory> --panel-predictions-dir <panel-predictions-directory> --output-private <private-model-output-directory> --output-dir <aggregate-output-directory>
 ```
 
-The common-panel directory supplies ELSA wave 4 and 6 people/interval pickles; panel-predictions supplies the paired diabetes predictions from module 62. CHARLS development/validation CSV files and original ELSA diabetes fold assignments are read under data-private. Only load trusted private pickle/model files. Tasks hba1c, frozen and evaluate can also be run separately with --task. Source data and private predictions are never exported; aggregate performance, paired contrasts, checksums and calibration coefficients are written to output-dir.
+The common-panel directory supplies ELSA wave-4 and wave-6 people/interval files. The private-data directory supplies CHARLS diabetes/lipid development and evaluation files and ELSA outer-fold assignments. The panel-predictions directory supplies `CHARLS_diabe_all_predictions.pkl` and `ELSA_diabe_all_predictions.pkl`. Tasks `hba1c`, `frozen` and `evaluate` can be run separately with `--task`.
 
-## Interpretation and reproducibility
+Glucose plus HbA1c versus panel plus HbA1c is a nested addition of six measures. Seven-measure panel versus glucose plus HbA1c compares alternative assay combinations. Transport uses common-core non-laboratory information; recalibration estimates intercept-only or intercept-and-slope functions outside each scored target fold, using identical target folds across models. Net-benefit thresholds are illustrative, with 10% the focus and 5%/20% supporting.
 
-The endpoints are subsequent diagnosis reports. The seven-outcome common-panel comparison is principal; the 13 modeled CHARLS outcomes provide supporting evidence, with cancer descriptive. Simplified-panel, restriction, landmark, transport, recalibration and decision-curve analyses are exploratory. Diagnostic-proximity classification is post hoc. The study was not prospectively registered. Conditional bootstrap intervals do not represent full retraining uncertainty; refitting checks are reported separately.
+### Paired pipeline-refitting sensitivity analysis
 
-Syntax and internal references are checked. Saved-result and saved-model verification do not constitute an independent end-to-end rerun from raw releases. Such a rerun has not been completed.
+```text
+python scripts/analyses/panel_performance/72_refitting_validation.py --data-private <private-data-directory> --common-panel-dir <common-panel-directory> --code-dir <repository-root> --output-dir <aggregate-output-directory> --repetitions 100 --workers 6
+```
 
-## Privacy and licence
+Each repetition repeats preprocessing and five-fold penalty selection. ELSA uses grouped nested evaluation; duplicated original identities remain together in all folds. Transport independently resamples source and target participants and re-estimates intercept-and-slope calibration outside scored target folds. Output files contain aggregate replicate metrics, tuning metadata and descriptive summaries, with no individual predictions or fitted models. An existing repetition file is reused to allow interrupted runs to resume; use an empty output directory for a fresh run. Repetition numbers and date-shaped random seeds are statistical parameters.
 
-Do not commit source data, derived individual records, private model objects, credentials or local environment files. Code is licensed under MIT; the CHARLS and ELSA data remain subject to their custodians' access conditions.
+### Aggregate figure source and rendering
+
+```text
+python scripts/figures/export_transport_decision_source.py --evaluated-dir <private-model-output-directory> --output-dir <aggregate-curve-directory>
+Rscript scripts/figures/transport_decision_curves.R <aggregate-curve-directory>/decision_curve_source.csv <figure-output-stem>
+```
+
+The exporter reads `CHARLS_to_ELSA_diabe_evaluated.pkl` and `ELSA_to_CHARLS_diabe_evaluated.pkl` produced by module 71, exporting only aggregate threshold curves and input checksums. The R script draws frozen/recalibrated curves in both directions. Best default is the maximum of assess-all and assess-none. Curves are point estimates; conditional intervals and refitting ranges are reported separately.
+
+## Interpretation and reproducibility boundaries
+
+Endpoints reflect subsequent recognition and reporting of physician diagnoses, not biological disease onset. Diagnostic-proximity classification is post hoc; the study was not prospectively registered. Conditional paired bootstrap intervals are pointwise and unadjusted for multiplicity. Full pipeline-refitting medians, percentiles and sign counts are descriptive sensitivity results, not equivalence tests, clinical benefit probabilities or independent population validation.
+
+The released scripts have syntax, entry-point and aggregate-result checks. These checks and the completed paired refitting analysis do not constitute an independent end-to-end rerun from the authorized raw releases.
+
+## Citation and licence
+
+Use `CITATION.cff` for software citation metadata. The MIT licence applies to code only. CHARLS and ELSA source and derived participant-level data remain subject to their custodians' access conditions.

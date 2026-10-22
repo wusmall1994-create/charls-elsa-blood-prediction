@@ -1,0 +1,41 @@
+{
+  "title": "Routine blood measures in CHARLS and ELSA: analysis code",
+  "upload_type": "software",
+  "version": "1.0.0",
+  "description": "Analysis code for incremental prediction of subsequent physician-diagnosis reports in CHARLS and ELSA. Includes paired laboratory comparisons, frozen cross-cohort transport, cross-fitted target recalibration, paired pipeline-refitting sensitivity analysis and figure rendering. No participant-level data, individual predictions or private fitted objects are included.",
+  "creators": [
+    {
+      "name": "Liang, Huadong",
+      "affiliation": "Longyan First Affiliated Hospital of Fujian Medical University"
+    },
+    {
+      "name": "Wu, Xiaoxin",
+      "affiliation": "Longyan First Affiliated Hospital of Fujian Medical University"
+    },
+    {
+      "name": "Qiu, Rongjin",
+      "affiliation": "Longyan First Affiliated Hospital of Fujian Medical University"
+    },
+    {
+      "name": "Huang, Shumin",
+      "affiliation": "Longyan First Affiliated Hospital of Fujian Medical University"
+    }
+  ],
+  "access_right": "open",
+  "license": "mit",
+  "keywords": [
+    "CHARLS",
+    "ELSA",
+    "risk prediction",
+    "blood biomarkers",
+    "calibration",
+    "transportability"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/wusmall1994-create/charls-elsa-blood-prediction",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}
