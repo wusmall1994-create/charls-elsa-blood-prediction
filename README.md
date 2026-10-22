@@ -1,5 +1,7 @@
 # Routine blood measures in CHARLS and ELSA
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23562784.svg)](https://doi.org/10.5281/zenodo.23562784)
+
 Analysis code for **Incremental predictive value of routine blood panels for physician-diagnosis reports in two ageing cohorts**.
 
 The principal analysis compares a seven-measure blood panel with core and richer non-laboratory models across seven subsequent physician-diagnosis-report outcomes. Exploratory analyses assess informative laboratory comparators, measurement availability, biochemical restriction, landmark prediction, frozen model transport, target recalibration and illustrative net benefit. A 14-measure CHARLS benchmark supplies supporting results across 13 modeled outcomes; cancer is descriptive.
@@ -66,5 +68,7 @@ Endpoints reflect subsequent recognition and reporting of physician diagnoses, n
 The released scripts have syntax, entry-point and aggregate-result checks. These checks and the completed paired refitting analysis do not constitute an independent end-to-end rerun from the authorized raw releases.
 
 ## Citation and licence
+
+Liang, H., Wu, X., Qiu, R. & Huang, S. (2026). *Routine blood measures in CHARLS and ELSA: analysis code*, version 1.0.0. Zenodo. https://doi.org/10.5281/zenodo.23562784
 
 Use `CITATION.cff` for software citation metadata. The MIT licence applies to code only. CHARLS and ELSA source and derived participant-level data remain subject to their custodians' access conditions.
